@@ -1,0 +1,69 @@
+sword:
+- Backsword
+- Broadsword
+- Claymore
+- Cutlass
+- Dagger
+- Falchion
+- Flamberge
+- Foil
+- Gladius
+- Greatsword
+- Katana
+- Knife
+- Longsword
+- Rapier
+- Sabre
+- Scimitar
+- Sickle
+- Smallsword
+- Sword
+- Tachi
+- Zweihander
+axe:
+- Axe
+- Bardiche
+- Battleaxe
+- Broadaxe
+- Hand Axe
+- Halberd
+- Hatchet
+- Glaive
+- Greataxe
+- Machete
+- Palstave
+- Pollaxe
+- Sasumata
+- Tomahawk
+- Voulge
+pickaxe:
+- Crowbill
+- Kama
+- Mining Tool
+- Pick
+- Pickaxe
+- Sickle
+bow:
+- Arbalest
+- Ballistae
+- Bow
+- Compound Bow
+- Crossbow
+- Decurve Bow
+- Deflex Bow
+- Flatbow
+- Lockbow
+- Longbow
+- Recurve Bow
+- Shortbow
+spade:
+- Club
+- Digging Tool
+- Shovel
+- Spade
+- Tool
+hoe:
+- Farming Tool
+- Hoe
+- Reaper
+- Scythe
