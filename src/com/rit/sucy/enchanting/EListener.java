@@ -83,7 +83,7 @@ public class EListener implements Listener {
 
         LivingEntity damaged = (LivingEntity)event.getEntity();
         LivingEntity damager = event.getDamager() instanceof LivingEntity ? (LivingEntity) event.getDamager()
-                : event.getDamager() instanceof Projectile ? ((Projectile)event.getDamager()).getShooter()
+                : event.getDamager() instanceof Projectile ? (LivingEntity)((Projectile) event.getDamager()).getShooter()
                 : null;
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK
                 && event.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) return;
@@ -252,8 +252,8 @@ public class EListener implements Listener {
     public void onProjectile(ProjectileLaunchEvent event) {
         if (event.getEntity().getShooter() == null)
             return;
-        for (Map.Entry<CustomEnchantment, Integer> entry : getValidEnchantments(getItems(event.getEntity().getShooter())).entrySet()) {
-            entry.getKey().applyProjectileEffect(event.getEntity().getShooter(), entry.getValue(), event);
+        for (Map.Entry<CustomEnchantment, Integer> entry : getValidEnchantments(getItems((LivingEntity)event.getEntity().getShooter())).entrySet()) {
+            entry.getKey().applyProjectileEffect((LivingEntity)event.getEntity().getShooter(), entry.getValue(), event);
         }
     }
 
