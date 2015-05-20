@@ -106,7 +106,7 @@ public class TableTask extends BukkitRunnable {
     }
 
     /**
-     * Creates a placeholder for the privded item
+     * Creates a placeholder for the provided item
      *
      * @param item       item to modify
      * @param storedItem original item

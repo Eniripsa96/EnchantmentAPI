@@ -1,6 +1,8 @@
 package com.rit.sucy.Anvil;
 
+import com.rit.sucy.Anvil.v1_8_3.MainAnvil;
 import com.rit.sucy.EUpdateTask;
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -36,8 +38,12 @@ public class AnvilListener implements Listener {
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             Player player = plugin.getServer().getPlayer(event.getPlayer().getName());
 
-            if (plugin.getServer().getVersion().contains("MC: 1.8")) {
+            if (plugin.getServer().getVersion().contains("MC: 1.8.3")) {
                 MainAnvil anvil = new MainAnvil(plugin, event.getInventory(), player);
+                tasks.put(player.getName(), new AnvilTask(plugin, anvil));
+            }
+            else if (plugin.getServer().getVersion().contains("MC: 1.8")) {
+                com.rit.sucy.Anvil.v1_8.MainAnvil anvil = new com.rit.sucy.Anvil.v1_8.MainAnvil(plugin, event.getInventory(), player);
                 tasks.put(player.getName(), new AnvilTask(plugin, anvil));
             }
             else {
