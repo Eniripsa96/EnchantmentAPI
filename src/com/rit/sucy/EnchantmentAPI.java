@@ -3,6 +3,7 @@ package com.rit.sucy;
 import com.rit.sucy.Anvil.AnvilListener;
 import com.rit.sucy.commands.Commander;
 import com.rit.sucy.config.RootConfig;
+import com.rit.sucy.config.RootNode;
 import com.rit.sucy.enchanting.*;
 import com.rit.sucy.lore.LoreConfig;
 import com.rit.sucy.service.ENameParser;
@@ -121,7 +122,10 @@ public class EnchantmentAPI extends JavaPlugin {
 
         // Listeners
         new EListener(this);
-        new AnvilListener(this);
+        if (getModuleForClass(RootConfig.class).getBoolean(RootNode.ANVIL_ENABLED))
+        {
+            new AnvilListener(this);
+        }
     }
 
     /**

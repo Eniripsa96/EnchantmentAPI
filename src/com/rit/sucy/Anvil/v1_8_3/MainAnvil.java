@@ -2,11 +2,8 @@ package com.rit.sucy.Anvil.v1_8_3;
 
 import com.rit.sucy.Anvil.AnvilView;
 import net.minecraft.server.v1_8_R2.EntityPlayer;
-import net.minecraft.server.v1_8_R2.InventoryCraftResult;
-import net.minecraft.server.v1_8_R2.InventorySubcontainer;
 import net.minecraft.server.v1_8_R2.ContainerAnvil;
 import net.minecraft.server.v1_8_R2.IInventory;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftInventoryAnvil;

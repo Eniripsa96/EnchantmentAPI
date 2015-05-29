@@ -7,6 +7,7 @@ import com.rit.sucy.config.RootConfig;
 import com.rit.sucy.config.RootNode;
 import com.rit.sucy.service.ENameParser;
 import com.rit.sucy.service.PermissionNode;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -48,7 +49,12 @@ public class EListener implements Listener {
     /**
      * Tasks for updating enchanting tables
      */
-    Hashtable<String, TableTask> tasks = new Hashtable<String, TableTask>();
+    HashMap<String, TableTask> tasks = new HashMap<String, TableTask>();
+
+    /**
+     * The offered levels for determining rank upon enchant
+     */
+    HashMap<String, int[]> levels = new HashMap<String, int[]>();
 
     /**
      * Whether or not to excuse the next player attack event
@@ -60,7 +66,8 @@ public class EListener implements Listener {
      *
      * @param plugin plugin to register this listener to
      */
-    public EListener(EnchantmentAPI plugin) {
+    public EListener(EnchantmentAPI plugin)
+    {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
         this.plugin = plugin;
     }
@@ -70,10 +77,12 @@ public class EListener implements Listener {
      *
      * @param event the event details
      */
-    @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onHit(EntityDamageByEntityEvent event) {
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onHit(EntityDamageByEntityEvent event)
+    {
 
-        if (excuse) {
+        if (excuse)
+        {
             excuse = false;
             return;
         }
@@ -81,16 +90,18 @@ public class EListener implements Listener {
         // Rule out cases where enchantments don't apply
         if (!(event.getEntity() instanceof LivingEntity)) return;
 
-        LivingEntity damaged = (LivingEntity)event.getEntity();
+        LivingEntity damaged = (LivingEntity) event.getEntity();
         LivingEntity damager = event.getDamager() instanceof LivingEntity ? (LivingEntity) event.getDamager()
-                : event.getDamager() instanceof Projectile ? (LivingEntity)((Projectile) event.getDamager()).getShooter()
+                : event.getDamager() instanceof Projectile ? (LivingEntity) ((Projectile) event.getDamager()).getShooter()
                 : null;
         if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK
-                && event.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) return;
-        if (damager != null) {
+            && event.getCause() != EntityDamageEvent.DamageCause.PROJECTILE) return;
+        if (damager != null)
+        {
 
             // Apply offensive enchantments
-            for (Map.Entry<CustomEnchantment, Integer> entry : getValidEnchantments(getItems(damager)).entrySet()) {
+            for (Map.Entry<CustomEnchantment, Integer> entry : getValidEnchantments(getItems(damager)).entrySet())
+            {
                 entry.getKey().applyEffect(damager, damaged, entry.getValue(), event);
             }
         }
@@ -238,7 +249,8 @@ public class EListener implements Listener {
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onDisconnect(PlayerQuitEvent event) {
         EEquip.clearPlayer(event.getPlayer());
-        if (tasks.contains(event.getPlayer().getName())) {
+        levels.remove(event.getPlayer().getName());
+        if (tasks.containsKey(event.getPlayer().getName())) {
             tasks.remove(event.getPlayer().getName());
         }
     }
@@ -250,7 +262,7 @@ public class EListener implements Listener {
      */
     @EventHandler (priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onProjectile(ProjectileLaunchEvent event) {
-        if (event.getEntity().getShooter() == null)
+        if (event.getEntity().getShooter() == null || !(event.getEntity().getShooter() instanceof LivingEntity))
             return;
         for (Map.Entry<CustomEnchantment, Integer> entry : getValidEnchantments(getItems((LivingEntity)event.getEntity().getShooter())).entrySet()) {
             entry.getKey().applyProjectileEffect((LivingEntity)event.getEntity().getShooter(), entry.getValue(), event);
@@ -296,6 +308,16 @@ public class EListener implements Listener {
     }
 
     /**
+     * Records the available levels for enchanting
+     *
+     * @param event event details
+     */
+    @EventHandler
+    public void onPrepare(PrepareItemEnchantEvent event) {
+        levels.put(event.getEnchanter().getName(), Arrays.copyOf(event.getExpLevelCostsOffered(), 3));
+    }
+
+    /**
      * Enchantment table integration
      *
      * @param event event details
@@ -310,8 +332,8 @@ public class EListener implements Listener {
 
         // Make sure the item can be enchanted
         if (EnchantmentAPI.getEnchantments(event.getItem()).size() > 0) return;
-        if (event.getEnchanter().getLevel() < event.getExpLevelCost()
-                && event.getEnchanter().getGameMode() != GameMode.CREATIVE) return;
+        //if (event.getEnchanter().getLevel() < event.getExpLevelCost()
+                //&& event.getEnchanter().getGameMode() != GameMode.CREATIVE) return;
 
         // Make sure only one item is enchanted
         ItemStack storedItem = tasks.get(event.getEnchanter().getName()).stored;
@@ -331,7 +353,7 @@ public class EListener implements Listener {
             return;
 
         // Clear the table
-        event.getInventory().clear();
+        event.getInventory().setItem(0, null);
         event.getEnchantsToAdd().clear();
 
         // Random name generation
@@ -353,9 +375,22 @@ public class EListener implements Listener {
         // Give the item
         event.getInventory().addItem(item);
 
-        // Level cost
+        // Cost
+        int cost = 1;
+        int[] costs = levels.get(event.getEnchanter().getName());
+        for (int i = 0; i < costs.length; i++) {
+            if (costs[i] == event.getExpLevelCost()) {
+                cost = i + 1;
+            }
+        }
         if (event.getEnchanter().getGameMode() != GameMode.CREATIVE)
-            event.getEnchanter().setLevel(event.getEnchanter().getLevel() - event.getExpLevelCost());
+        {
+            event.getEnchanter().setLevel(event.getEnchanter().getLevel() - cost);
+            if (event.getInventory().getItem(1).getAmount() <= cost) {
+                event.getInventory().setItem(1, null);
+            }
+            else event.getInventory().getItem(1).setAmount(event.getInventory().getItem(1).getAmount() - cost);
+        }
     }
 
     /**

@@ -32,6 +32,8 @@ public enum RootNode implements ConfigNode
             ("Generate Unique Name", VarType.BOOLEAN, true),
     MAX_ENCHANTS
             ("Max Enchantments", VarType.INTEGER, 5),
+    ANVIL_ENABLED
+            ("Anvil Enabled", VarType.BOOLEAN, true),
     VANILLA_ENABLED
             (getVisibleSettingsNode() + getVanillaNode() + "Enabled", VarType.BOOLEAN, true),
     VANILLA_TABLE
