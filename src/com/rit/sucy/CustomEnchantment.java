@@ -1,5 +1,7 @@
 package com.rit.sucy;
 
+import com.rit.sucy.config.RootConfig;
+import com.rit.sucy.config.RootNode;
 import com.rit.sucy.service.ENameParser;
 import com.rit.sucy.service.ERomanNumeral;
 import com.rit.sucy.service.MaterialClass;
@@ -9,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockEvent;
@@ -292,7 +295,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @return true if can be obtained in the table, false otherwise
      */
     public boolean isTableEnabled() {
-        return isTableEnabled;
+        return isTableEnabled &&
+               ((EnchantmentAPI)Bukkit.getPluginManager().getPlugin("EnchantmentAPI")).getModuleForClass(RootConfig.class).getBoolean(RootNode.CUSTOM_TABLE);
     }
 
     /**

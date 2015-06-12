@@ -73,8 +73,8 @@ public class EEquip extends BukkitRunnable {
                 else if (previous == null)
                     /* do nothing */ ;
                 else if (!equips[i].toString().equalsIgnoreCase(previous[i].toString())) {
-                    doEquip(equips[i]);
                     doUnequip(previous[i]);
+                    doEquip(equips[i]);
                 }
             }
         }

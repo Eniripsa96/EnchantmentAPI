@@ -1,6 +1,9 @@
 package com.rit.sucy.enchanting;
 
 import com.rit.sucy.CustomEnchantment;
+import com.rit.sucy.EnchantmentAPI;
+import com.rit.sucy.config.RootConfig;
+import com.rit.sucy.config.RootNode;
 import com.rit.sucy.service.MaterialClass;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -48,6 +51,15 @@ public class VanillaEnchantment extends CustomEnchantment
     @Override
     public String name() {
         return vanilla.getName();
+    }
+
+    /**
+     * @return true if can be obtained in the table, false otherwise
+     */
+    @Override
+    public boolean isTableEnabled() {
+        return isTableEnabled &&
+               ((EnchantmentAPI)Bukkit.getPluginManager().getPlugin("EnchantmentAPI")).getModuleForClass(RootConfig.class).getBoolean(RootNode.VANILLA_TABLE);
     }
 
     @Override
