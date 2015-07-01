@@ -49,12 +49,16 @@ public enum EnchantmentNode implements ConfigNode
      * The items on which this enchantment can be obtained through the enchanting table
      */
     ITEMS ("Items", VarType.LIST, Collections.emptyList()),
-    ;
+
+    /**
+     * Whether or not the enchantment stacks when using multiple items
+     */
+    STACK("Stack", VarType.BOOLEAN, false),;
 
     /**
      * Path.
      */
-    private final String path;
+    private final String  path;
     /**
      * Variable type.
      */

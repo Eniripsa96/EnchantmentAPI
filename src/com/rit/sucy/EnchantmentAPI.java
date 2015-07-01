@@ -353,7 +353,11 @@ public class EnchantmentAPI extends JavaPlugin {
             if (name == null) continue;
             if (level == 0) continue;
             if (EnchantmentAPI.isRegistered(name)) {
-                list.put(EnchantmentAPI.getEnchantment(name), level);
+                CustomEnchantment enchant = EnchantmentAPI.getEnchantment(name);
+                if (enchant.canStack() && list.containsKey(enchant)) {
+                    level += list.get(enchant);
+                }
+                list.put(enchant, level);
             }
         }
         return list;

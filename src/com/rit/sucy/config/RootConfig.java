@@ -163,6 +163,10 @@ public class RootConfig extends ModularConfig
                             else if (obj instanceof Integer)
                                 enchantment.setInterval((Integer)obj);
                             break;
+                        case STACK:
+                            if (obj instanceof Boolean)
+                                enchantment.setCanStack((Boolean)obj);
+                            break;
                         default:
                             throw new UnsupportedOperationException("The node " + node.name() + " hasn't been configured yet");
                     }
@@ -234,6 +238,8 @@ public class RootConfig extends ModularConfig
             // Items
             if (getBoolean(RootNode.CUSTOM_ITEMS))
                 out.set(path + EnchantmentNode.ITEMS.getPath(), MaterialsParser.toStringArray(enchant.getNaturalMaterials()));
+            if (getBoolean(RootNode.CUSTOM_STACK))
+                out.set(path + EnchantmentNode.STACK.getPath(), enchant.canStack());
         }
 
         Collections.sort(vanillaEnchantments);

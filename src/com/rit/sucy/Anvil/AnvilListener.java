@@ -23,6 +23,8 @@ public class AnvilListener implements Listener {
 
     private final Hashtable<String, AnvilTask> tasks = new Hashtable<String, AnvilTask>();
 
+    private boolean custom = false;
+
     public AnvilListener(Plugin plugin) {
         this.plugin = plugin;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
@@ -38,19 +40,30 @@ public class AnvilListener implements Listener {
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             Player player = plugin.getServer().getPlayer(event.getPlayer().getName());
 
-            if (plugin.getServer().getVersion().contains("MC: 1.8.3")) {
-                MainAnvil anvil = new MainAnvil(plugin, event.getInventory(), player);
-                tasks.put(player.getName(), new AnvilTask(plugin, anvil));
+            int id = 0;
+            try {
+                String v = plugin.getServer().getVersion();
+                int ind = v.indexOf("MC: 1.8.") + 8;
+                id = Integer.parseInt(v.substring(ind, ind + 1));
+            }
+            catch (Exception ex) { }
+
+            AnvilView anvil;
+            if (id > 4) {
+                anvil = new com.rit.sucy.Anvil.v1_8_6.MainAnvil(plugin, event.getInventory(), player);
+            }
+            else if (id > 0) {
+                anvil = new MainAnvil(plugin, event.getInventory(), player);
             }
             else if (plugin.getServer().getVersion().contains("MC: 1.8")) {
-                com.rit.sucy.Anvil.v1_8.MainAnvil anvil = new com.rit.sucy.Anvil.v1_8.MainAnvil(plugin, event.getInventory(), player);
-                tasks.put(player.getName(), new AnvilTask(plugin, anvil));
+                anvil = new com.rit.sucy.Anvil.v1_8.MainAnvil(plugin, event.getInventory(), player);
             }
             else {
                 event.setCancelled(true);
-                CustomAnvil anvil = new CustomAnvil(plugin, player);
-                tasks.put(player.getName(), new AnvilTask(plugin, anvil));
+                anvil = new CustomAnvil(plugin, player);
+                custom = true;
             }
+            tasks.put(player.getName(), new AnvilTask(plugin, anvil));
         }
     }
 
@@ -78,7 +91,7 @@ public class AnvilListener implements Listener {
         Player player = plugin.getServer().getPlayer(event.getWhoClicked().getName());
 
         // Make sure the inventory is the custom inventory
-        if (tasks.containsKey(player.getName()) && !plugin.getServer().getVersion().contains("MC: 1.7.2")) {
+        if (tasks.containsKey(player.getName()) && custom) {
             if (tasks.get(player.getName()).getView().getInventory().getName().equals(event.getInventory().getName())) {
                 AnvilView view = tasks.get(player.getName()).getView();
                 ItemStack[] inputs = view.getInputSlots();

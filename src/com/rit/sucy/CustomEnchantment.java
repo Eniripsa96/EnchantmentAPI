@@ -6,6 +6,7 @@ import com.rit.sucy.service.ENameParser;
 import com.rit.sucy.service.ERomanNumeral;
 import com.rit.sucy.service.MaterialClass;
 import com.rit.sucy.service.MaterialsParser;
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,7 +32,8 @@ import java.util.Map;
 /**
  * Base class for custom enchantments
  */
-public abstract class CustomEnchantment implements Comparable<CustomEnchantment>{
+public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
+{
 
     /**
      * Default group that doesn't conflict with any other enchantments
@@ -57,7 +59,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Names of all the items that can receive this enchantment at an enchanting table
      */
-    protected Material [] naturalItems;
+    protected Material[] naturalItems;
 
     /**
      * Weight of the enchantment
@@ -95,18 +97,26 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     protected int max;
 
     /**
+     * Whether or not the enchantment stacks with multiple items
+     */
+    protected boolean stacks;
+
+    /**
      * @param name enchantment name
      */
-    public CustomEnchantment(String name) {
+    public CustomEnchantment(String name)
+    {
         this(name, null, new Material[0], DEFAULT_GROUP, 5);
     }
 
     /**
      * @param name         the unique name of the enchantment
      * @param naturalItems the names of items that can normally have this enchantment
+     *
      * @deprecated use the constructor with Material[] instead
      */
-    public CustomEnchantment(String name, String[] naturalItems) {
+    public CustomEnchantment(String name, String[] naturalItems)
+    {
         this(name, null, MaterialsParser.toMaterial(naturalItems), DEFAULT_GROUP, 5);
     }
 
@@ -114,7 +124,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param name         the unique name of the enchantment
      * @param naturalItems the names of items that can normally have this enchantment
      */
-    public CustomEnchantment(String name, Material[] naturalItems) {
+    public CustomEnchantment(String name, Material[] naturalItems)
+    {
         this(name, null, naturalItems, DEFAULT_GROUP, 5);
     }
 
@@ -122,7 +133,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param name        the unique name of the enchantment
      * @param description the brief description for the enchantment
      */
-    public CustomEnchantment(String name, String description) {
+    public CustomEnchantment(String name, String description)
+    {
         this(name, description, new Material[0], DEFAULT_GROUP, 5);
     }
 
@@ -130,9 +142,11 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param name         the unique name of the enchantment
      * @param naturalItems the names of items that can normally have this enchantment
      * @param weight       the weight of the enchantment
+     *
      * @deprecated use constructor with Material[] instead instead of String[]
      */
-    public CustomEnchantment(String name, String[] naturalItems, int weight) {
+    public CustomEnchantment(String name, String[] naturalItems, int weight)
+    {
         this(name, null, MaterialsParser.toMaterial(naturalItems), DEFAULT_GROUP, weight);
     }
 
@@ -141,7 +155,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param naturalItems the items that can normally have this enchantment
      * @param weight       the weight of the enchantment
      */
-    public CustomEnchantment(String name, Material [] naturalItems, int weight) {
+    public CustomEnchantment(String name, Material[] naturalItems, int weight)
+    {
         this(name, null, naturalItems, DEFAULT_GROUP, weight);
     }
 
@@ -150,7 +165,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param naturalItems the items that can normally have this enchantment
      * @param group        the conflict group for this enchantment
      */
-    public CustomEnchantment(String name, Material[] naturalItems, String group) {
+    public CustomEnchantment(String name, Material[] naturalItems, String group)
+    {
         this(name, null, naturalItems, group, 5);
     }
 
@@ -159,26 +175,29 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param description  a brief description for the enchantment
      * @param naturalItems the items that can normally have this enchantment
      */
-    public CustomEnchantment(String name, String description, Material[] naturalItems) {
+    public CustomEnchantment(String name, String description, Material[] naturalItems)
+    {
         this(name, description, naturalItems, DEFAULT_GROUP, 5);
     }
 
     /**
-     * @param name         the unique name of the enchantment
-     * @param description  a brief description for the enchantment
-     * @param group        the group that this enchantment conflicts with
+     * @param name        the unique name of the enchantment
+     * @param description a brief description for the enchantment
+     * @param group       the group that this enchantment conflicts with
      */
-    public CustomEnchantment(String name,  String description, String group) {
-        this (name, description, new Material[0], group, 5);
+    public CustomEnchantment(String name, String description, String group)
+    {
+        this(name, description, new Material[0], group, 5);
     }
 
     /**
-     * @param name         the unique name of the enchantment
-     * @param description  a brief description for the enchantment
-     * @param weight       the weight of this enchantment
+     * @param name        the unique name of the enchantment
+     * @param description a brief description for the enchantment
+     * @param weight      the weight of this enchantment
      */
-    public CustomEnchantment(String name, String description, int weight) {
-        this (name, description, new Material[0], DEFAULT_GROUP, 5);
+    public CustomEnchantment(String name, String description, int weight)
+    {
+        this(name, description, new Material[0], DEFAULT_GROUP, 5);
     }
 
     /**
@@ -187,8 +206,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param naturalItems the items that can normally have this enchantment
      * @param group        the conflict group of the enchantment
      */
-    public CustomEnchantment(String name, String description, Material[] naturalItems, String group) {
-        this (name, description, naturalItems, group, 5);
+    public CustomEnchantment(String name, String description, Material[] naturalItems, String group)
+    {
+        this(name, description, naturalItems, group, 5);
     }
 
     /**
@@ -197,17 +217,19 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param naturalItems the items that can normally have this enchantment
      * @param weight       the weight of this enchantment
      */
-    public CustomEnchantment(String name, String description, Material[] naturalItems, int weight) {
+    public CustomEnchantment(String name, String description, Material[] naturalItems, int weight)
+    {
         this(name, description, naturalItems, DEFAULT_GROUP, 5);
     }
 
     /**
-     * @param name         the unique name of the enchantment
-     * @param description  a brief description for the enchantment
-     * @param group        the group that this enchantment conflicts with
-     * @param weight       the weight of this enchantment
+     * @param name        the unique name of the enchantment
+     * @param description a brief description for the enchantment
+     * @param group       the group that this enchantment conflicts with
+     * @param weight      the weight of this enchantment
      */
-    public CustomEnchantment(String name, String description, String group, int weight) {
+    public CustomEnchantment(String name, String description, String group, int weight)
+    {
         this(name, description, new Material[0], group, weight);
     }
 
@@ -217,7 +239,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param group        the group that this enchantment conflicts with
      * @param weight       the weight of this enchantment
      */
-    public CustomEnchantment(String name, Material[] naturalItems, String group, int weight) {
+    public CustomEnchantment(String name, Material[] naturalItems, String group, int weight)
+    {
         this(name, null, naturalItems, group, weight);
     }
 
@@ -228,7 +251,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param group        the group that this enchantment conflicts with
      * @param weight       the weight of this enchantment
      */
-    public CustomEnchantment(String name, String description, Material[] naturalItems, String group, int weight) {
+    public CustomEnchantment(String name, String description, Material[] naturalItems, String group, int weight)
+    {
         Validate.notEmpty(name, "Your Enchantment needs a name!");
         Validate.notNull(naturalItems, "Input an empty array instead of \"null\"!");
         Validate.isTrue(weight >= 0, "Weight can't be negative!");
@@ -242,6 +266,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         this.base = 1;
         this.interval = 10;
         this.isTableEnabled = true;
+        this.stacks = false;
 
         this.weight = new HashMap<MaterialClass, Integer>();
         this.weight.put(MaterialClass.DEFAULT, weight);
@@ -252,15 +277,37 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @return Enchantment name
      */
-    public String name() {
+    public String name()
+    {
         return enchantName;
     }
 
     /**
      * @return enchantment description
      */
-    public String getDescription() {
+    public String getDescription()
+    {
         return description;
+    }
+
+    /**
+     * Checks whether or not the enchantment can stack
+     *
+     * @return true if stacks, false otherwise
+     */
+    public boolean canStack()
+    {
+        return stacks;
+    }
+
+    /**
+     * Sets whether or not the enchantment can stack
+     *
+     * @param stack true if can stack, false otherwise
+     */
+    public void setCanStack(boolean stack)
+    {
+        this.stacks = stack;
     }
 
     /**
@@ -268,7 +315,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param enabled enabled state of the enchantment
      */
-    public void setEnabled (boolean enabled)
+    public void setEnabled(boolean enabled)
     {
         this.isEnabled = enabled;
     }
@@ -278,7 +325,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @return enabled state
      */
-    public boolean isEnabled() {
+    public boolean isEnabled()
+    {
         return isEnabled;
     }
 
@@ -287,26 +335,31 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param value enabled state of the enchantment
      */
-    public void setTableEnabled(boolean value) {
+    public void setTableEnabled(boolean value)
+    {
         isTableEnabled = value;
     }
 
     /**
      * @return true if can be obtained in the table, false otherwise
      */
-    public boolean isTableEnabled() {
+    public boolean isTableEnabled()
+    {
         return isTableEnabled &&
-               ((EnchantmentAPI)Bukkit.getPluginManager().getPlugin("EnchantmentAPI")).getModuleForClass(RootConfig.class).getBoolean(RootNode.CUSTOM_TABLE);
+               ((EnchantmentAPI) Bukkit.getPluginManager().getPlugin("EnchantmentAPI")).getModuleForClass(RootConfig.class).getBoolean(RootNode.CUSTOM_TABLE);
     }
 
     /**
      * Gets the enchantment level of an enchantment
      *
      * @param expLevel modified exp level
-     * @return         enchantment level
+     *
+     * @return enchantment level
      */
-    public int getEnchantLevel(int expLevel) {
-        for (int i = max; i >= 1; i--) {
+    public int getEnchantLevel(int expLevel)
+    {
+        for (int i = max; i >= 1; i--)
+        {
             if (expLevel >= base + interval * (i - 1)) return i;
         }
         return 0;
@@ -315,7 +368,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * @return maximum level for this enchantment
      */
-    public int getMaxLevel() {
+    public int getMaxLevel()
+    {
         return max;
     }
 
@@ -324,14 +378,16 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param value maximum level
      */
-    public void setMaxLevel(int value) {
+    public void setMaxLevel(int value)
+    {
         max = value;
     }
 
     /**
      * @return minimum modified level to get this enchantment
      */
-    public double getBase() {
+    public double getBase()
+    {
         return base;
     }
 
@@ -340,14 +396,16 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param value minimum modified level
      */
-    public void setBase(double value) {
+    public void setBase(double value)
+    {
         base = value;
     }
 
     /**
      * @return number of modified levels required to get the next enchantment level
      */
-    public double getInterval() {
+    public double getInterval()
+    {
         return interval;
     }
 
@@ -356,14 +414,16 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param value required modified levels
      */
-    public void setInterval(double value) {
+    public void setInterval(double value)
+    {
         interval = value;
     }
 
     /**
      * @return suffix groups this enchantment pulls from
      */
-    public List<String> getSuffixGroups() {
+    public List<String> getSuffixGroups()
+    {
         return suffixGroups;
     }
 
@@ -371,16 +431,18 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * Gets the cost per level in the anvil when this enchantment is present
      *
      * @param withBook whether or not a book was used
-     * @return         cost per level
+     *
+     * @return cost per level
      */
-    public int getCostPerLevel(boolean withBook) {
+    public int getCostPerLevel(boolean withBook)
+    {
         int costIndex = weight.get(MaterialClass.DEFAULT) * max;
         int divisor = withBook ? 2 : 1;
         return
-            weight.get(MaterialClass.DEFAULT) == 1 ? 8 / divisor
-            : costIndex < 10 ? 4 / divisor
-            : costIndex < 30 ? 2 / divisor
-            : 1;
+                weight.get(MaterialClass.DEFAULT) == 1 ? 8 / divisor
+                        : costIndex < 10 ? 4 / divisor
+                        : costIndex < 30 ? 2 / divisor
+                        : 1;
     }
 
     /**
@@ -396,11 +458,13 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Get the items on which this enchantment can naturally be found on
      *
-     * @return      the names of the items
+     * @return the names of the items
+     *
      * @deprecated use getNaturalMaterials instead
      */
-    public String[] getNaturalItems(){
-        String[] natItems = new String [naturalItems.length];
+    public String[] getNaturalItems()
+    {
+        String[] natItems = new String[naturalItems.length];
         for (int i = 0; i < naturalItems.length; i++)
             natItems[i] = naturalItems[i].name();
         return natItems;
@@ -427,29 +491,35 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * @return the default weight of this item
      */
-    public int getWeight (){
+    public int getWeight()
+    {
         return weight.get(MaterialClass.DEFAULT);
     }
 
     /**
      * Get the weight of an Enchantment for a specific MaterialClass
      *
-     * @param material  Material to get the weight for
-     * @return          of the Enchantment or the DefaultWeight if not found
+     * @param material Material to get the weight for
+     *
+     * @return of the Enchantment or the DefaultWeight if not found
      */
-    public int getWeight (MaterialClass material){
+    public int getWeight(MaterialClass material)
+    {
         return weight.containsKey(material) ? weight.get(material) : weight.get(MaterialClass.DEFAULT);
     }
 
     /**
      * Checks if this enchantment can be normally applied to the item.
      *
-     * @param  item the item to check for
-     * @return      true if the enchantment can be normally applied, false otherwise
+     * @param item the item to check for
+     *
+     * @return true if the enchantment can be normally applied, false otherwise
      */
-    public boolean canEnchantOnto(ItemStack item) {
+    public boolean canEnchantOnto(ItemStack item)
+    {
         if (naturalItems == null || item == null) return false;
-        for (Material validItem : naturalItems) {
+        for (Material validItem : naturalItems)
+        {
             if (item.getType() == validItem) return true;
         }
         return item.getType() == Material.BOOK || item.getType() == Material.ENCHANTED_BOOK;
@@ -460,24 +530,28 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      *
      * @param group the new group for this enchantment
      */
-    public void setGroup (String group){
+    public void setGroup(String group)
+    {
         this.group = group;
     }
 
     /**
      * @return conflict group
      */
-    public String getGroup() {
+    public String getGroup()
+    {
         return group;
     }
 
     /**
      * Check if this CustomEnchantment conflicts with another Enchantment
      *
-     * @param enchantment   to check
-     * @return              true if conflicts and false if Enchantment can be applied
+     * @param enchantment to check
+     *
+     * @return true if conflicts and false if Enchantment can be applied
      */
-    public boolean conflictsWith (CustomEnchantment enchantment){
+    public boolean conflictsWith(CustomEnchantment enchantment)
+    {
         Validate.notNull(enchantment);
 
         return !group.equals(DEFAULT_GROUP) && group.equalsIgnoreCase(enchantment.group);
@@ -486,11 +560,12 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Check for the given List of Items if they conflict with this Enchantment
      *
-     * @param enchantmentsToCheck   All Enchantments to check
+     * @param enchantmentsToCheck All Enchantments to check
      *
-     * @return                      if this enchant conflicts with one (or more) enchantments
+     * @return if this enchant conflicts with one (or more) enchantments
      */
-    public boolean conflictsWith (List<CustomEnchantment> enchantmentsToCheck){
+    public boolean conflictsWith(List<CustomEnchantment> enchantmentsToCheck)
+    {
         Validate.notNull(enchantmentsToCheck);
         for (CustomEnchantment enchantment : enchantmentsToCheck)
             if (conflictsWith(enchantment))
@@ -501,11 +576,12 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Check for the given List of Items if they conflict with this Enchantment
      *
-     * @param enchantmentsToCheck   All Enchantments to check
+     * @param enchantmentsToCheck All Enchantments to check
      *
-     * @return                      if this enchant conflicts with one (or more) enchantments
+     * @return if this enchant conflicts with one (or more) enchantments
      */
-    public boolean conflictsWith (CustomEnchantment ... enchantmentsToCheck){
+    public boolean conflictsWith(CustomEnchantment... enchantmentsToCheck)
+    {
         Validate.notNull(enchantmentsToCheck);
         for (CustomEnchantment enchantment : enchantmentsToCheck)
             if (conflictsWith(enchantment))
@@ -516,23 +592,29 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Adds this enchantment onto the given item with the enchantment level provided
      *
-     * @param  item         the item being enchanted
-     * @param  enchantLevel the level of enchantment
-     * @return              the enchanted item
+     * @param item         the item being enchanted
+     * @param enchantLevel the level of enchantment
+     *
+     * @return the enchanted item
      */
-    public ItemStack addToItem(ItemStack item, int enchantLevel) {
+    public ItemStack addToItem(ItemStack item, int enchantLevel)
+    {
         Validate.notNull(item);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) meta = Bukkit.getServer().getItemFactory().getItemMeta(item.getType());
         List<String> metaLore = meta.getLore() == null ? new ArrayList<String>() : meta.getLore();
 
         // Make sure the enchantment doesn't already exist on the item
-        for (Map.Entry<CustomEnchantment, Integer> entry : EnchantmentAPI.getEnchantments(item).entrySet()) {
-            if (entry.getKey().name().equals(name())) {
-                if (entry.getValue() < enchantLevel) {
+        for (Map.Entry<CustomEnchantment, Integer> entry : EnchantmentAPI.getEnchantments(item).entrySet())
+        {
+            if (entry.getKey().name().equals(name()))
+            {
+                if (entry.getValue() < enchantLevel)
+                {
                     metaLore.remove(ChatColor.GRAY + name() + " " + ERomanNumeral.numeralOf(entry.getValue()));
                 }
-                else {
+                else
+                {
                     return item;
                 }
             }
@@ -551,17 +633,21 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * Removes this enchantment from the item if it exists
      *
      * @param item item to remove this enchantment from
-     * @return     the item without this enchantment
+     *
+     * @return the item without this enchantment
      */
-    public ItemStack removeFromItem(ItemStack item) {
+    public ItemStack removeFromItem(ItemStack item)
+    {
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return item;
         if (!meta.hasLore()) return item;
         List<String> metaLore = meta.getLore();
 
         // Make sure the enchantment doesn't already exist on the item
-        for (Map.Entry<CustomEnchantment, Integer> entry : EnchantmentAPI.getEnchantments(item).entrySet()) {
-            if (entry.getKey().name().equals(name())) {
+        for (Map.Entry<CustomEnchantment, Integer> entry : EnchantmentAPI.getEnchantments(item).entrySet())
+        {
+            if (entry.getKey().name().equals(name()))
+            {
                 metaLore.remove(ChatColor.GRAY + name() + " " + ERomanNumeral.numeralOf(entry.getValue()));
             }
         }
@@ -571,14 +657,14 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     /**
      * Compare the name of the enchantment
      *
-     * @param obj   Object to compare
-     * @return      if Objects are equal
+     * @param obj Object to compare
+     *
+     * @return if Objects are equal
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof CustomEnchantment)
-            return this.name().equalsIgnoreCase(((CustomEnchantment) obj).name());
-        return false;
+    public boolean equals(Object obj)
+    {
+       return (obj instanceof CustomEnchantment) && this.name().equalsIgnoreCase(((CustomEnchantment) obj).name());
     }
 
     /**
@@ -586,10 +672,12 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * We just look at the name for comparison.
      *
      * @param customEnchantment to compare to
+     *
      * @return -1 if less than, 0 if equal, 1 if greater
      */
     @Override
-    public int compareTo(CustomEnchantment customEnchantment) {
+    public int compareTo(CustomEnchantment customEnchantment)
+    {
         return this.name().compareTo(customEnchantment.name());
     }
 
@@ -601,7 +689,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param enchantLevel the level of the used enchantment
      * @param event        the event details
      */
-    public void applyEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageByEntityEvent event) { }
+    public void applyEffect(LivingEntity user, LivingEntity target, int enchantLevel, EntityDamageByEntityEvent event)
+    {
+    }
 
     /**
      * Applies the enchantment defensively (when taking damage)
@@ -612,7 +702,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param event        the event details (EntityDamageByEntityEvent, EntityDamageByBlockEvent, or just EntityDamageEvent)
      */
     public void applyDefenseEffect(LivingEntity user, LivingEntity target,
-            int enchantLevel, EntityDamageEvent event) {}
+                                   int enchantLevel, EntityDamageEvent event)
+    {
+    }
 
     /**
      * Applies effects while breaking blocks (for tool effects)
@@ -621,7 +713,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param block  the block being broken
      * @param event  the event details (either BlockBreakEvent or BlockDamageEvent)
      */
-    public void applyToolEffect(Player player, Block block, int enchantLevel, BlockEvent event) {}
+    public void applyToolEffect(Player player, Block block, int enchantLevel, BlockEvent event)
+    {
+    }
 
     /**
      * Applies effects when the player left or right clicks (For other kinds of enchantments like spells)
@@ -629,7 +723,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param player the player with the enchantment
      * @param event  the event details
      */
-    public void applyMiscEffect(Player player, int enchantLevel, PlayerInteractEvent event) {}
+    public void applyMiscEffect(Player player, int enchantLevel, PlayerInteractEvent event)
+    {
+    }
 
     /**
      * Applies effects when the item is equipped
@@ -637,7 +733,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param player       the player that equipped it
      * @param enchantLevel the level of enchantment
      */
-    public void applyEquipEffect(Player player, int enchantLevel) {}
+    public void applyEquipEffect(Player player, int enchantLevel)
+    {
+    }
 
     /**
      * Applies effects when the item is unequipped
@@ -645,7 +743,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param player       the player that unequipped it
      * @param enchantLevel the level of enchantment
      */
-    public void applyUnequipEffect(Player player, int enchantLevel) {}
+    public void applyUnequipEffect(Player player, int enchantLevel)
+    {
+    }
 
     /**
      * Applies effects when the player interacts with an entity
@@ -654,7 +754,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param enchantLevel enchantment level
      * @param event        the event details
      */
-    public void applyEntityEffect(Player player, int enchantLevel, PlayerInteractEntityEvent event) {}
+    public void applyEntityEffect(Player player, int enchantLevel, PlayerInteractEntityEvent event)
+    {
+    }
 
     /**
      * Applies effects when firing a projectile
@@ -663,5 +765,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
      * @param enchantLevel enchantment level
      * @param event        the event details
      */
-    public void applyProjectileEffect(LivingEntity user, int enchantLevel, ProjectileLaunchEvent event) { }
+    public void applyProjectileEffect(LivingEntity user, int enchantLevel, ProjectileLaunchEvent event)
+    {
+    }
 }

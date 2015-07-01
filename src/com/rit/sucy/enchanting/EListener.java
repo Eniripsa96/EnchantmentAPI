@@ -424,7 +424,11 @@ public class EListener implements Listener {
                 if (name == null) continue;
                 if (level == 0) continue;
                 if (EnchantmentAPI.isRegistered(name)) {
-                    validEnchantments.put(EnchantmentAPI.getEnchantment(name), level);
+                    CustomEnchantment enchant = EnchantmentAPI.getEnchantment(name);
+                    if (enchant.canStack() && validEnchantments.containsKey(enchant)) {
+                        level += validEnchantments.get(enchant);
+                    }
+                    validEnchantments.put(enchant, level);
                 }
             }
         }

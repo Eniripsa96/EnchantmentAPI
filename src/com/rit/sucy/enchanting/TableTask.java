@@ -100,7 +100,7 @@ public class TableTask extends BukkitRunnable {
         if (inv.getItem() != null && inv.getItem().getType() != Material.AIR && placeholder == null) {
             stored = inv.getItem().clone();
             placeholder = createPlaceholder(inv.getItem(), stored);
-            inv.setItem(placeholder);
+            inv.setItem(0, placeholder);
             placeholder = inv.getItem();
         }
     }

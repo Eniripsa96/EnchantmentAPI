@@ -66,7 +66,8 @@ public enum RootNode implements ConfigNode
             (getVisibleSettingsNode() + getCustomNode() + "Base", VarType.BOOLEAN, true),
     CUSTOM_INTERVAL
             (getVisibleSettingsNode() + getCustomNode() + "Interval", VarType.BOOLEAN, true),
-
+    CUSTOM_STACK
+            (getVisibleSettingsNode() + getCustomNode() + "Stacks", VarType.BOOLEAN, true),
     ;
 
     /**
