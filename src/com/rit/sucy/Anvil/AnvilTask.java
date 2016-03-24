@@ -41,7 +41,7 @@ public class AnvilTask extends BukkitRunnable {
 
         if (input[0] != contents[0] || input[1] != contents[1]) {
             if (anvil instanceof MainAnvil)
-                AnvilMechanics.updateResult(anvil, input, ((MainAnvil) anvil).getNameText());
+                AnvilMechanics.updateResult(anvil, input, anvil.getNameText());
             else
                 AnvilMechanics.updateResult(anvil, input);
             contents = input;

@@ -91,8 +91,7 @@ public class TableTask extends BukkitRunnable {
 
         EnchantingInventory inv = (EnchantingInventory)view.getTopInventory();
         if (placeholder != null) {
-            if (inv.getItem() == null || !inv.getItem().hasItemMeta() || !inv.getItem().getItemMeta().hasDisplayName()
-                    || !inv.getItem().getItemMeta().getDisplayName().equals(placeholder.getItemMeta().getDisplayName())) {
+            if (inv.getItem() != placeholder) {
                 restore();
                 new EUpdateTask(plugin, player);
             }

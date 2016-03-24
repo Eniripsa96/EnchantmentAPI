@@ -109,11 +109,12 @@ public class EnchantmentAPI extends JavaPlugin {
                 }
                 catch (Exception e) {
                     getLogger().info("Failed to load enchantments from " + plugin.getName() + ": perhaps it is outdated?");
+                    e.printStackTrace();
                 }
             }
         }
 
-        for (Player player : getServer().getOnlinePlayers()) {
+        for (Player player : Version.getOnlinePlayers()) {
             EEquip.loadPlayer(player);
         }
 
@@ -344,6 +345,7 @@ public class EnchantmentAPI extends JavaPlugin {
      */
     public static Map<CustomEnchantment, Integer> getEnchantments(ItemStack item) {
         HashMap<CustomEnchantment, Integer> list = new HashMap<CustomEnchantment, Integer>();
+        if (item == null) return list;
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return list;
         if (!meta.hasLore()) return list;

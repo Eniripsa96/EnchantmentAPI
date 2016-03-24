@@ -80,8 +80,7 @@ public class EListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onHit(EntityDamageByEntityEvent event)
     {
-
-        if (excuse)
+        if (excuse || event.getCause() == EntityDamageEvent.DamageCause.CUSTOM)
         {
             excuse = false;
             return;
@@ -277,7 +276,7 @@ public class EListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         Inventory inv = event.getInventory();
-        if (event.getInventory().getType() == InventoryType.ENCHANTING && event.isShiftClick()) {
+        if (event.getInventory().getType() == InventoryType.ENCHANTING) {
             if (tasks.containsKey(event.getWhoClicked().getName())) {
                 tasks.get(event.getWhoClicked().getName()).restore();
             }
@@ -415,6 +414,7 @@ public class EListener implements Listener {
     private Map<CustomEnchantment, Integer> getValidEnchantments(ArrayList<ItemStack> items) {
         Map<CustomEnchantment, Integer> validEnchantments = new HashMap<CustomEnchantment, Integer>();
         for (ItemStack item : items) {
+            if (item == null) continue;
             ItemMeta meta = item.getItemMeta();
             if (meta == null) continue;
             if (!meta.hasLore()) continue;

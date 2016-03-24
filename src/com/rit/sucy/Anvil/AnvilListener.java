@@ -2,6 +2,7 @@ package com.rit.sucy.Anvil;
 
 import com.rit.sucy.Anvil.v1_8_3.MainAnvil;
 import com.rit.sucy.EUpdateTask;
+import com.rit.sucy.Version;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -16,6 +17,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import java.util.Hashtable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AnvilListener implements Listener {
 
@@ -40,24 +43,18 @@ public class AnvilListener implements Listener {
         if (event.getInventory().getType() == InventoryType.ANVIL) {
             Player player = plugin.getServer().getPlayer(event.getPlayer().getName());
 
-            int id = 0;
-            try {
-                String v = plugin.getServer().getVersion();
-                int ind = v.indexOf("MC: 1.8.") + 8;
-                id = Integer.parseInt(v.substring(ind, ind + 1));
-            }
-            catch (Exception ex) { }
-
             AnvilView anvil;
-            if (id > 4) {
+
+            // See if the server is supported
+            String pack = Version.getPackage();
+            if (pack.equals("v1_9_R1"))
+                anvil = new com.rit.sucy.Anvil.v1_9_0.MainAnvil(plugin, event.getInventory(), player);
+            else if (pack.equals("v1_8_R3"))
                 anvil = new com.rit.sucy.Anvil.v1_8_6.MainAnvil(plugin, event.getInventory(), player);
-            }
-            else if (id > 0) {
+            else if (pack.equals("v1_8_R2"))
                 anvil = new MainAnvil(plugin, event.getInventory(), player);
-            }
-            else if (plugin.getServer().getVersion().contains("MC: 1.8")) {
+            else if (pack.equals("v1_8_R1"))
                 anvil = new com.rit.sucy.Anvil.v1_8.MainAnvil(plugin, event.getInventory(), player);
-            }
             else {
                 event.setCancelled(true);
                 anvil = new CustomAnvil(plugin, player);

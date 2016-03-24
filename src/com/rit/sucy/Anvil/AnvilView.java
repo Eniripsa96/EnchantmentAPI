@@ -98,4 +98,9 @@ public interface AnvilView
      * @return anvil inventory
      */
     public Inventory getInventory();
+
+    /**
+     * @return name of the item
+     */
+    public String getNameText();
 }

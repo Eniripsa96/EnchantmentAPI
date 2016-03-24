@@ -10,6 +10,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -226,6 +227,15 @@ public class CustomAnvil implements AnvilView, Listener {
     @Override
     public Inventory getInventory() {
         return anvil;
+    }
+
+    /**
+     * @return custom doesn't support names
+     */
+    @Override
+    public String getNameText()
+    {
+        throw new NotImplementedException();
     }
 
     /**
