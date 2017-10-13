@@ -1,6 +1,5 @@
 package com.sucy.enchant.listener;
 
-import com.sucy.enchant.EnchantmentAPI;
 import com.sucy.enchant.api.Enchantments;
 import com.sucy.enchant.api.Tasks;
 import com.sucy.enchant.data.PlayerEquips;
@@ -24,6 +23,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 import static com.sucy.enchant.util.Utils.isPresent;
 
 /**
@@ -32,12 +34,8 @@ import static com.sucy.enchant.util.Utils.isPresent;
  */
 public class ItemListener extends BaseListener {
 
-    private EnchantmentAPI plugin;
-
-    @Override
-    public void init(final EnchantmentAPI plugin) {
-        this.plugin = plugin;
-    }
+    private static final HashMap<UUID, Long> LAST_INTERACT = new HashMap<>();
+    private static final int INTERACT_DELAY_MILLIS = 250;
 
     // ---- Tracking enchantments ---- //
 
@@ -142,12 +140,22 @@ public class ItemListener extends BaseListener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onInteractBlock(final PlayerInteractEvent event) {
+        if (LAST_INTERACT.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
+            return;
+        }
+
+        LAST_INTERACT.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
         Enchantments.getEnchantments(event.getPlayer()).forEach(
                 (enchant, level) -> enchant.applyInteractBlock(event.getPlayer(), level, event));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onInteractEntity(final PlayerInteractEntityEvent event) {
+        if (LAST_INTERACT.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
+            return;
+        }
+
+        LAST_INTERACT.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
         Enchantments.getEnchantments(event.getPlayer()).forEach(
                 (enchant, level) -> enchant.applyInteractEntity(event.getPlayer(), level, event));
     }
