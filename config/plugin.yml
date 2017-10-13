@@ -1,0 +1,24 @@
+name: EnchantmentAPI
+main: com.sucy.enchant.EnchantmentAPI
+version: 1.0.0
+softdepend: [SkillAPI]
+
+permissions:
+    EnchantmentAPI.list:
+        description: basic list of enchantments
+        default: true
+    EnchantmentAPI.book:
+        description: gives a book with enchantment descriptions
+        default: true
+    EnchantmentAPI.admin:
+        description: applying enchantments
+        default: op
+    EnchantmentAPI.table:
+        description: getting custom enchantments from the table
+        default: true
+    EnchantmentAPI.enchant:
+        description: access to all enchantments
+        default: true
+    EnchantmentAPI.enchant.vanilla:
+        description: access to all vanilla enchantments
+        default: true

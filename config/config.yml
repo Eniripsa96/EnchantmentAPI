@@ -1,0 +1,30 @@
+# Max number of enchantments someone can receive
+# when using an enchantment table
+max-enchantments: 3
+#
+# Max number of enchantments someone can receive
+# when using an anvil
+max-merged-enchantments: 5
+#
+# Whether or not to let players use colors when
+# renaming items in anvils
+colored-names-in-anvils: true
+#
+# Whether or not to allow normally non-enchantable
+# items to be enchanted (e.g. blaze rods). This
+# will cause them to show up as books when placed
+# in an enchanting table.
+non-enchantables: true
+#
+# Global level enchantments can be combined up to.
+# Any enchantments with a higher max level than this
+# will use their max level instead.
+global-anvil-level: 0
+#
+# Whether or not custom enchantments can be obtained
+# on items received while fishing
+custom-fishing: true
+#
+# The enchantment level used to enchant items received
+# while fishing. Requires "custom-fishing" to be enabled.
+fishing-enchanting-level: 30
