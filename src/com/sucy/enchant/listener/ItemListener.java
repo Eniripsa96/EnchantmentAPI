@@ -34,7 +34,9 @@ import static com.sucy.enchant.util.Utils.isPresent;
  */
 public class ItemListener extends BaseListener {
 
-    private static final HashMap<UUID, Long> LAST_INTERACT = new HashMap<>();
+    private static final HashMap<UUID, Long> LAST_INTERACT_BLOCK  = new HashMap<>();
+    private static final HashMap<UUID, Long> LAST_INTERACT_ENTITY = new HashMap<>();
+
     private static final int INTERACT_DELAY_MILLIS = 250;
 
     // ---- Tracking enchantments ---- //
@@ -47,6 +49,8 @@ public class ItemListener extends BaseListener {
     @EventHandler
     public void onQuit(final PlayerQuitEvent event) {
         Enchantments.clearEquipmentData(event.getPlayer());
+        LAST_INTERACT_BLOCK.remove(event.getPlayer().getUniqueId());
+        LAST_INTERACT_ENTITY.remove(event.getPlayer().getUniqueId());
     }
 
     @EventHandler
@@ -63,7 +67,7 @@ public class ItemListener extends BaseListener {
     @EventHandler
     public void onPickup(final EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player) {
-            final PlayerEquips equips = Enchantments.getEquipmentData((Player)event.getEntity());
+            final PlayerEquips equips = Enchantments.getEquipmentData((Player) event.getEntity());
             Tasks.schedule(() -> equips.updateWeapon(((Player) event.getEntity()).getInventory()));
         }
     }
@@ -104,7 +108,7 @@ public class ItemListener extends BaseListener {
         try {
             final LivingEntity damager = getDamager(event);
             if (damager instanceof Player && event.getEntity() instanceof LivingEntity) {
-                Enchantments.getEnchantments((Player)damager).forEach(
+                Enchantments.getEnchantments((Player) damager).forEach(
                         (enchant, level) -> enchant.applyOnHit(
                                 damager,
                                 (LivingEntity) event.getEntity(),
@@ -113,11 +117,10 @@ public class ItemListener extends BaseListener {
             }
 
             if (event.getEntity() instanceof Player && damager != null) {
-                Enchantments.getEnchantments((Player)event.getEntity()).forEach(
+                Enchantments.getEnchantments((Player) event.getEntity()).forEach(
                         (enchant, level) -> enchant.applyDefense((Player) event.getEntity(), damager, level, event));
             }
-        }
-        catch (final Exception ex) {
+        } catch (final Exception ex) {
             ex.printStackTrace();
         }
         running = false;
@@ -129,7 +132,8 @@ public class ItemListener extends BaseListener {
             return;
         }
         final Player shooter = (Player) event.getEntity().getShooter();
-        Enchantments.getEnchantments(shooter).forEach((enchant, level) -> enchant.applyProjectile(shooter, level, event));
+        Enchantments.getEnchantments(shooter)
+                .forEach((enchant, level) -> enchant.applyProjectile(shooter, level, event));
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
@@ -138,24 +142,24 @@ public class ItemListener extends BaseListener {
                 (enchant, level) -> enchant.applyBreak(event.getPlayer(), event.getBlock(), level, event));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onInteractBlock(final PlayerInteractEvent event) {
-        if (LAST_INTERACT.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
+        if (LAST_INTERACT_BLOCK.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
             return;
         }
 
-        LAST_INTERACT.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
+        LAST_INTERACT_BLOCK.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
         Enchantments.getEnchantments(event.getPlayer()).forEach(
                 (enchant, level) -> enchant.applyInteractBlock(event.getPlayer(), level, event));
     }
 
-    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onInteractEntity(final PlayerInteractEntityEvent event) {
-        if (LAST_INTERACT.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
+        if (LAST_INTERACT_ENTITY.getOrDefault(event.getPlayer().getUniqueId(), 0L) > System.currentTimeMillis()) {
             return;
         }
 
-        LAST_INTERACT.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
+        LAST_INTERACT_ENTITY.put(event.getPlayer().getUniqueId(), System.currentTimeMillis() + INTERACT_DELAY_MILLIS);
         Enchantments.getEnchantments(event.getPlayer()).forEach(
                 (enchant, level) -> enchant.applyInteractEntity(event.getPlayer(), level, event));
     }

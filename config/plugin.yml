@@ -1,6 +1,6 @@
 name: EnchantmentAPI
 main: com.sucy.enchant.EnchantmentAPI
-version: 1.0.1
+version: 1.0.2
 depend: [MCCore]
 softdepend: [SkillAPI]
 
