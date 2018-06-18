@@ -123,7 +123,7 @@ public class Enchantments {
     public static boolean hasCustomEnchantment(final ItemStack item, final String enchantmentName) {
         if (!item.hasItemMeta()) return false;
         final ItemMeta meta = item.getItemMeta();
-        return meta.hasLore() && meta.getLore().stream().anyMatch(line -> LoreReader.isEnchantment(line, enchantmentName));
+        return meta.hasLore() && meta.getLore().stream().anyMatch(LoreReader::isEnchantment);
     }
 
     /**
@@ -147,7 +147,7 @@ public class Enchantments {
         final ItemMeta meta = item.getItemMeta();
         if (meta.hasLore()) {
             meta.setLore(meta.getLore().stream()
-                    .filter(line -> LoreReader.isEnchantment(line, LoreReader.parseEnchantmentName(line)))
+                    .filter(line -> !LoreReader.isEnchantment(line))
                     .collect(Collectors.toList()));
         }
         return item;

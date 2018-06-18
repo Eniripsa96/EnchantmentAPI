@@ -27,7 +27,10 @@ public class SkillEnchantment extends CustomEnchantment {
     SkillEnchantment(final String key, final DataSection data) {
         super(key, "No description provided");
 
-        skill = SkillAPI.getSkill(data.getString(SKILL));
+        final String skillName = data.getString(SKILL, settings.getString(SKILL));
+        settings.set(SKILL, skillName);
+
+        skill = SkillAPI.getSkill(skillName);
         if (skill == null) System.out.println(data.getString(SKILL) + " is not a skill");
         setMaxLevel(skill.getMaxLevel());
         Cooldowns.configure(settings,

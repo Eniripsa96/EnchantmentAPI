@@ -333,10 +333,10 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
         final int lvl = Enchantments.getCustomEnchantments(item).getOrDefault(this, 0);
         if (lvl > 0) {
-            lore.remove(LoreReader.formatEnchantment(name, lvl));
+            lore.remove(LoreReader.formatEnchantment(this, lvl));
         }
 
-        lore.add(0, LoreReader.formatEnchantment(name, level));
+        lore.add(0, LoreReader.formatEnchantment(this, level));
         meta.setLore(lore);
         item.setItemMeta(meta);
         return item;
@@ -353,7 +353,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         if (lvl > 0) {
             final ItemMeta meta = item.getItemMeta();
             final List<String> lore = meta.getLore();
-            lore.remove(LoreReader.formatEnchantment(name, lvl));
+            lore.remove(LoreReader.formatEnchantment(this, lvl));
             meta.setLore(lore);
             item.setItemMeta(meta);
         }

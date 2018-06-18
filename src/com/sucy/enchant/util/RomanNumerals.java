@@ -55,7 +55,8 @@ public class RomanNumerals {
      * @return integer value (0 if invalid string)
      */
     public static int fromNumerals(final String romanNumeral) {
-        Validate.notEmpty(romanNumeral, "String cannot be empty");
+        if (romanNumeral == null || romanNumeral.isEmpty()) return 0;
+
         int result = 0;
         int next = getNumeralValue(romanNumeral.charAt(0));
         for (int i = 1; i < romanNumeral.length(); i++) {

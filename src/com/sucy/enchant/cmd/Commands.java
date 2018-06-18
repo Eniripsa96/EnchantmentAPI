@@ -24,6 +24,14 @@ public class Commands {
                         "EnchantmentAPI.admin"),
                 new ConfigurableCommand(
                         plugin,
+                        "remove",
+                        SenderType.PLAYER_ONLY,
+                        new CmdRemove(),
+                        "removes enchants",
+                        "",
+                        "EnchantmentAPI.admin"),
+                new ConfigurableCommand(
+                        plugin,
                         "reload",
                         SenderType.ANYONE,
                         new CmdReload(),

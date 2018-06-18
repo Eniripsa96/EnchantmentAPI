@@ -82,7 +82,7 @@ public class EnchantmentAPI extends JavaPlugin implements EnchantmentRegistry {
      * @return true if the enchantment is registered successfully, false otherwise
      */
     public static boolean isRegistered(final String name) {
-        return ENCHANTMENTS.containsKey(name.toLowerCase());
+        return name != null && ENCHANTMENTS.containsKey(name.toLowerCase());
     }
 
     /**
@@ -90,7 +90,7 @@ public class EnchantmentAPI extends JavaPlugin implements EnchantmentRegistry {
      * @return enchantment with the provided name
      */
     public static CustomEnchantment getEnchantment(final String name) {
-        return ENCHANTMENTS.get(name.toLowerCase());
+        return name == null ? null : ENCHANTMENTS.get(name.toLowerCase());
     }
 
     /**

@@ -1,5 +1,7 @@
 package com.sucy.enchant.util;
 
+import com.sucy.enchant.EnchantmentAPI;
+import com.sucy.enchant.api.CustomEnchantment;
 import org.bukkit.ChatColor;
 
 import java.util.Objects;
@@ -21,8 +23,11 @@ public class LoreReader {
         Objects.requireNonNull(text, "Text cannot be null");
         if (!text.startsWith(ChatColor.GRAY.toString())) return "";
 
-        final int lastSpace = text.lastIndexOf(' ');
-        return lastSpace > 2 ? text.substring(2, lastSpace) : "";
+        final String noColor = text.substring(2);
+        final int index = noColor.lastIndexOf(' ');
+        final int level = RomanNumerals.fromNumerals(noColor.substring(index + 1));
+        return level > 0 ? noColor.substring(0, index)
+                : noColor;
     }
 
     /**
@@ -30,36 +35,34 @@ public class LoreReader {
      * with no spaces after it, matching the format for enchantments.
      *
      * @param text text to parse the level from
-     * @return parsed level or 0 if invalid
+     * @return parsed level or 1 if not found
      */
     public static int parseEnchantmentLevel(final String text) {
         Objects.requireNonNull(text, "Text cannot be null");
-        final int lastSpace = text.lastIndexOf(' ');
-        return lastSpace > 0 && lastSpace < text.length() - 1 ? RomanNumerals.fromNumerals(text.substring(lastSpace + 1)) : 0;
+
+        final int index = text.lastIndexOf(' ');
+        final int level = RomanNumerals.fromNumerals(text.substring(index + 1));
+        return level > 0 ? level : 1;
     }
 
     /**
      * Formats an enchantment name for appending to an item's lore.
      *
-     * @param name enchantment name
+     * @param enchantment enchantment name
      * @param level level of the enchantment
      * @return lore string for the enchantment
      */
-    public static String formatEnchantment(final String name, final int level) {
-        return ChatColor.GRAY + name + " " + RomanNumerals.toNumerals(level);
+    public static String formatEnchantment(final CustomEnchantment enchantment, final int level) {
+        return ChatColor.GRAY + enchantment.getName() + (enchantment.getMaxLevel() > 1 ? " " + RomanNumerals.toNumerals(level) : "");
     }
 
     /**
      * Checks whether or not the lore line is the line for the given enchantment
      *
      * @param line line to check
-     * @param enchantmentName name of the enchantment
      * @return true if the line matches, false otherwise
      */
-    public static boolean isEnchantment(final String line, final String enchantmentName) {
-        if (!line.startsWith(ChatColor.GRAY.toString())) return false;
-
-        final int level = parseEnchantmentLevel(line);
-        return level > 0 && line.equals(formatEnchantment(enchantmentName, level));
+    public static boolean isEnchantment(final String line) {
+        return EnchantmentAPI.isRegistered(parseEnchantmentName(line));
     }
 }
