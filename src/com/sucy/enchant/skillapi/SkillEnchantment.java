@@ -21,13 +21,14 @@ import org.bukkit.event.player.PlayerInteractEvent;
 public class SkillEnchantment extends CustomEnchantment {
 
     private static final String SKILL = "skill";
+    private static final String EFFECT = "effect.";
 
     private final Skill skill;
 
     SkillEnchantment(final String key, final DataSection data) {
         super(key, "No description provided");
 
-        final String skillName = data.getString(SKILL, settings.getString(SKILL));
+        String skillName = data.getString(SKILL, data.getString(EFFECT + SKILL));
         settings.set(SKILL, skillName);
 
         skill = SkillAPI.getSkill(skillName);
