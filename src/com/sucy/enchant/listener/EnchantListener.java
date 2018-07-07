@@ -7,14 +7,14 @@ import com.rit.sucy.config.parse.DataSection;
 import com.rit.sucy.items.ItemManager;
 import com.sucy.enchant.EnchantmentAPI;
 import com.sucy.enchant.api.Enchantments;
-import com.sucy.enchant.api.Tasks;
+import com.sucy.enchant.api.GlowEffects;
 import com.sucy.enchant.api.ItemSet;
+import com.sucy.enchant.api.Tasks;
 import com.sucy.enchant.data.ConfigKey;
 import com.sucy.enchant.data.Configuration;
+import com.sucy.enchant.data.Path;
 import com.sucy.enchant.mechanics.EnchantResult;
 import com.sucy.enchant.mechanics.EnchantingMechanics;
-import com.sucy.enchant.api.GlowEffects;
-import com.sucy.enchant.data.Path;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -32,7 +32,9 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
@@ -83,12 +85,9 @@ public class EnchantListener extends BaseListener {
     public void onPrepareEnchant(final PrepareItemEnchantEvent event) {
         final ItemStack item = getItem(event.getItem(), event.getEnchanter());
         final long seed = enchantSeeds.get(event.getEnchanter().getUniqueId());
-        offers.put(event.getEnchanter().getUniqueId(), new int[] {
-                event.getOffers()[0].getCost(), 1,
-                event.getOffers()[1].getCost(), 2,
-                event.getOffers()[2].getCost(), 3
-        });
+        offers.put(event.getEnchanter().getUniqueId(), transformOffers(event.getOffers()));
         for (final EnchantmentOffer offer : event.getOffers()) {
+            if (offer == null) continue;
             final EnchantResult result = mechanics.generateEnchantments(
                     event.getEnchanter(), item, offer.getCost(), true, seed);
             result.getFirstVanillaEnchantment().ifPresent(enchant -> {
@@ -96,6 +95,17 @@ public class EnchantListener extends BaseListener {
                 offer.setEnchantmentLevel(result.getFirstVanillaLevel());
             });
         }
+    }
+
+    private int[] transformOffers(final EnchantmentOffer[] offers) {
+        final List<Integer> result = new ArrayList<>(6);
+        for (int i = 0; i < offers.length; i++) {
+            if (offers[i] == null) continue;
+
+            result.add(offers[i].getCost());
+            result.add(i + 1);
+        }
+        return result.stream().mapToInt(Integer::intValue).toArray();
     }
 
     private ItemStack getItem(final ItemStack fromEvent, final Player enchanter) {
@@ -120,7 +130,7 @@ public class EnchantListener extends BaseListener {
         if (event.getEnchanter().getGameMode() != GameMode.CREATIVE) {
             int cost = 0;
             final int[] tiers = offers.get(event.getEnchanter().getUniqueId());
-            for (int i = 0; i < 6; i += 2) {
+            for (int i = 0; i < tiers.length; i += 2) {
                 if (tiers[i] == event.getExpLevelCost()) cost = tiers[i + 1];
             }
             event.getEnchanter().setLevel(event.getEnchanter().getLevel() - cost);
@@ -178,7 +188,7 @@ public class EnchantListener extends BaseListener {
     }
 
     private static final Set<Material> ENCHANTABLES = ImmutableSet.<Material>builder()
-            .add(ItemSet.ALL.getItems())
+            .add(ItemSet.VANILLA_ENCHANTABLES.getItems())
             .add(Material.BOOK)
             .add(Material.ENCHANTED_BOOK)
             .build();

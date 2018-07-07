@@ -11,6 +11,7 @@ import com.sucy.skill.api.skills.SkillShot;
 import com.sucy.skill.api.skills.TargetSkill;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -22,6 +23,7 @@ public class SkillEnchantment extends CustomEnchantment {
 
     private static final String SKILL = "skill";
     private static final String EFFECT = "effect.";
+    private static final String CLICK = "right-click";
 
     private final Skill skill;
 
@@ -30,6 +32,7 @@ public class SkillEnchantment extends CustomEnchantment {
 
         String skillName = data.getString(SKILL, data.getString(EFFECT + SKILL));
         settings.set(SKILL, skillName);
+        settings.set(CLICK, true);
 
         skill = SkillAPI.getSkill(skillName);
         if (skill == null) System.out.println(data.getString(SKILL) + " is not a skill");
@@ -56,7 +59,12 @@ public class SkillEnchantment extends CustomEnchantment {
     @Override
     public void applyInteractBlock(
             final Player user, final int level, final PlayerInteractEvent event) {
-        if (skill instanceof SkillShot) {
+
+        if (event.getAction() == Action.PHYSICAL) return;
+        final boolean isRightClick = event.getAction() == Action.RIGHT_CLICK_AIR
+                || event.getAction() == Action.RIGHT_CLICK_BLOCK;
+
+        if (skill instanceof SkillShot && isRightClick == settings.getBoolean(CLICK, true)) {
             if (!Cooldowns.onCooldown(this, user, settings, level)) {
                 if (((SkillShot) skill).cast(user, level)) {
                     Cooldowns.start(this, user);
