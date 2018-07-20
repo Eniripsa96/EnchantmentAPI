@@ -165,8 +165,7 @@ public class EnchantListener extends BaseListener {
     @EventHandler
     public void onClose(final InventoryCloseEvent event) {
         if (placeholders.containsKey(event.getPlayer().getUniqueId())) {
-            event.getPlayer().getInventory().addItem(placeholders.get(event.getPlayer().getUniqueId()));
-            event.getInventory().clear();
+            event.getInventory().setItem(0, placeholders.remove(event.getPlayer().getUniqueId()));
         }
     }
 
