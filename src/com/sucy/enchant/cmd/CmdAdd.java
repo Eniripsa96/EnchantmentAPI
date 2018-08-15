@@ -5,7 +5,10 @@ import com.rit.sucy.commands.ConfigurableCommand;
 import com.rit.sucy.commands.IFunction;
 import com.sucy.enchant.EnchantmentAPI;
 import com.sucy.enchant.api.CustomEnchantment;
+import com.sucy.enchant.api.Enchantments;
 import com.sucy.enchant.api.GlowEffects;
+import com.sucy.enchant.api.Tasks;
+import com.sucy.enchant.data.PlayerEquips;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -69,6 +72,8 @@ public class CmdAdd implements IFunction {
 
         enchantment.addToItem(player.getInventory().getItemInMainHand(), level);
         GlowEffects.finalize(player.getInventory().getItemInMainHand());
+		final PlayerEquips equips = Enchantments.getEquipmentData(player);
+            Tasks.schedule(() -> equips.updateWeapon((player).getInventory()));
         command.sendMessage(sender, SUCCESS, ChatColor.DARK_GREEN + "Added the enchantment successfully");
     }
 }
