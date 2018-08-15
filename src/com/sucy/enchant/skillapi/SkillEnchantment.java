@@ -64,12 +64,8 @@ public class SkillEnchantment extends CustomEnchantment {
         final boolean isRightClick = event.getAction() == Action.RIGHT_CLICK_AIR
                 || event.getAction() == Action.RIGHT_CLICK_BLOCK;
 
-        if (skill instanceof SkillShot && isRightClick == settings.getBoolean(CLICK, true)) {
-            if (!Cooldowns.onCooldown(this, user, settings, level)) {
-                if (((SkillShot) skill).cast(user, level)) {
-                    Cooldowns.start(this, user);
-                }
-            }
+        if (isRightClick == settings.getBoolean(CLICK, true)) {
+            applySkillShot(user, level);
         }
     }
 
@@ -83,7 +79,15 @@ public class SkillEnchantment extends CustomEnchantment {
                     Cooldowns.start(this, user);
                 }
             }
-        } else applyInteractBlock(user, level, null);
+        } else applySkillShot(user, level);
+    }
+
+    private void applySkillShot(final Player user, final int level) {
+        if (skill instanceof SkillShot && !Cooldowns.onCooldown(this, user, settings, level)) {
+            if (((SkillShot) skill).cast(user, level)) {
+                Cooldowns.start(this, user);
+            }
+        }
     }
 
     static final String SAVE_FOLDER = "enchant/skill/";

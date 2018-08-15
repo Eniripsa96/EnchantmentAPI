@@ -50,6 +50,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     private final Map<Material, Double> materialWeights = new HashMap<>();
 
     private final Set<Material> naturalItems = new HashSet<>();
+    private final Set<Material> anvilItems   = new HashSet<>();
 
     private String key;
     private String name;
@@ -195,7 +196,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
     }
 
     public void setEnchantLevelScaleFactor(final double enchantLevelScaleFactor) {
-        Validate.isTrue(enchantLevelScaleFactor > 0, "Scale factor must be a positive number");
+        Validate.isTrue(enchantLevelScaleFactor >= 0, "Scale factor must be a non-negative number");
         setFactors = true;
         this.enchantLevelScaleFactor = enchantLevelScaleFactor;
     }
@@ -227,6 +228,17 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         for (Material material : materials) {
             Objects.requireNonNull(material, "Cannot add a null natural material");
             naturalItems.add(material);
+        }
+    }
+
+    public Set<Material> getAnvilItems() {
+        return anvilItems;
+    }
+
+    public void addAnvilItems(final Material... materials) {
+        for (Material material : materials) {
+            Objects.requireNonNull(material, "Cannot add a null natural material");
+            anvilItems.add(material);
         }
     }
 
@@ -275,6 +287,20 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
         final Material material = item.getType();
         return material == Material.BOOK || material == Material.ENCHANTED_BOOK || naturalItems.contains(material);
+    }
+
+    /**
+     * @param item item to check
+     * @return true if can merge onto the item, not including conflicts with other enchantments
+     */
+    public boolean canMergeOnto(final ItemStack item) {
+        if (!isPresent(item)) {
+            return false;
+        }
+
+        final Material material = item.getType();
+        return material == Material.BOOK || material == Material.ENCHANTED_BOOK
+                || naturalItems.contains(material) || anvilItems.contains(material);
     }
 
     /**
@@ -493,6 +519,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
             MIN_ENCHANTING_LEVEL = "min-enchanting-level",
             NAME = "name",
             NATURAL_ITEMS = "natural-items",
+            ANVIL_ITEMS = "anvil-items",
             STACKS = "stacks",
             TABLE_ENABLED = "table-enabled",
             WEIGHT = "weight",
@@ -508,6 +535,7 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
             MAX_TABLE_COMMENT = ImmutableList.of("", " Max attainable level from enchanting"),
             MIN_COMMENT = ImmutableList.of("", " Minimum enchanting level to receive the enchantment.", " Negatives make it easier to get higher ranks"),
             ITEM_COMMENT = ImmutableList.of("", " Items that can receive the enchantment from enchanting or anvils"),
+            ANVIL_COMMENT = ImmutableList.of("", " Additional items that can only receive the enchantment through anvils"),
             STACK_COMMENT = ImmutableList.of("", " Whether or not the same enchantment stacks if on multiple items.", " When false, the highest level is applied"),
             TABLE_COMMENT = ImmutableList.of("", " Whether or not this enchantment can be achieved from enchanting"),
             WEIGHT_COMMENT = ImmutableList.of("", " How common the enchantment is. Higher numbers are more common."),
@@ -538,6 +566,9 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
 
         data.set(NATURAL_ITEMS, naturalItems.stream().map(Material::name).collect(Collectors.toList()));
         data.setComments(NATURAL_ITEMS, ITEM_COMMENT);
+
+        data.set(ANVIL_ITEMS, anvilItems.stream().map(Material::name).collect(Collectors.toList()));
+        data.setComments(ANVIL_ITEMS, ANVIL_COMMENT);
 
         data.set(WEIGHT, weight);
         data.setComments(WEIGHT, WEIGHT_COMMENT);
@@ -590,15 +621,8 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
         setTableEnabled(data.getBoolean(TABLE_ENABLED, tableEnabled));
         setWeight(data.getDouble(WEIGHT, weight));
 
-        if (data.has(NATURAL_ITEMS)) {
-            naturalItems.clear();
-            addNaturalItems();
-            naturalItems.addAll(data.getList(NATURAL_ITEMS).stream()
-                    .map(line -> line.toUpperCase().replace(' ', '_'))
-                    .map(Material::matchMaterial)
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList()));
-        }
+        loadItems(naturalItems, data, NATURAL_ITEMS);
+        loadItems(anvilItems, data, ANVIL_ITEMS);
 
         if (data.isSection(MATERIAL)) {
             materialWeights.clear();
@@ -620,5 +644,16 @@ public abstract class CustomEnchantment implements Comparable<CustomEnchantment>
             this.settings.keys().forEach(key -> settings.checkDefault(key, this.settings.get(key)));
             this.settings = settings;
         }
+    }
+
+    private void loadItems(final Set<Material> destination, final DataSection data, final String key) {
+        if (!data.has(key)) return;
+
+        destination.clear();
+        destination.addAll(data.getList(key).stream()
+                .map(line -> line.toUpperCase().replace(' ', '_'))
+                .map(Material::matchMaterial)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList()));
     }
 }

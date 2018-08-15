@@ -86,7 +86,7 @@ public class EnchantmentMerger {
     public ItemStack apply(final ItemStack item) {
         final ItemStack result = Enchantments.removeAllEnchantments(item);
         enchants.entrySet().stream()
-                .filter(e -> e.getKey().canEnchantOnto(item))
+                .filter(e -> e.getKey().canMergeOnto(item))
                 .forEach(e -> e.getKey().addToItem(result, e.getValue()));
         return GlowEffects.finalize(result);
     }

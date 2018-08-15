@@ -3,6 +3,7 @@ package com.sucy.enchant.data;
 import com.google.common.collect.ImmutableList;
 import com.rit.sucy.config.CommentedConfig;
 import com.rit.sucy.config.parse.DataSection;
+import com.rit.sucy.version.VersionManager;
 import com.sucy.enchant.EnchantmentAPI;
 import org.bukkit.Material;
 
@@ -61,8 +62,8 @@ public class Enchantability {
         final DataSection data = config.getConfig();
         if (!config.getConfigFile().exists()) {
             for (final MaterialClass materialClass : MaterialClass.values()) {
-                populate(data, ARMOR, materialClass.name(), "armor", materialClass.armor);
-                populate(data, WEAPON, materialClass.name(), "tool", materialClass.weapon);
+                populate(data, ARMOR, materialClass.name, "armor", materialClass.armor);
+                populate(data, WEAPON, materialClass.name, "tool", materialClass.weapon);
             }
         }
         if (!data.has(DEFAULT)) {
@@ -99,25 +100,33 @@ public class Enchantability {
             .add("AXE")
             .add("HOE")
             .add("PICKAXE")
-            .add("SPADE")
+            .add(VersionManager.isVersionAtLeast(11300) ? "SHOVEL" : "SPADE")
             .add("SWORD")
             .build();
 
     private enum MaterialClass {
-        WOOD(0, 15),
+        WOOD(0, 15, VersionManager.isVersionAtLeast(11300) ? "WOODEN" : "WOOD"),
         STONE(0, 5),
         IRON(9, 14),
-        GOLD(25, 22),
+        GOLD(25, 22, VersionManager.isVersionAtLeast(11300) ? "GOLDEN" : "GOLD"),
         DIAMOND(10, 10),
         LEATHER(15, 0),
         CHAINMAIL(12, 0);
 
         private final int armor;
         private final int weapon;
+        private final String name;
 
         MaterialClass(final int armor, final int weapon) {
             this.armor = armor;
             this.weapon = weapon;
+            this.name = this.name();
+        }
+
+        MaterialClass(final int armor, final int weapon, final String name) {
+            this.armor = armor;
+            this.weapon = weapon;
+            this.name = name;
         }
     }
 }

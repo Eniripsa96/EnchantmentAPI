@@ -115,26 +115,18 @@ public class PlayerEquips {
         }
     }
 
-    public static final Set<Material> ARMOR_TYPES = ImmutableSet.<Material>builder()
-            .add(Material.LEATHER_BOOTS)
-            .add(Material.LEATHER_CHESTPLATE)
-            .add(Material.LEATHER_HELMET)
-            .add(Material.LEATHER_LEGGINGS)
-            .add(Material.IRON_BOOTS)
-            .add(Material.IRON_CHESTPLATE)
-            .add(Material.IRON_HELMET)
-            .add(Material.IRON_LEGGINGS)
-            .add(Material.GOLD_BOOTS)
-            .add(Material.GOLD_CHESTPLATE)
-            .add(Material.GOLD_HELMET)
-            .add(Material.GOLD_LEGGINGS)
-            .add(Material.DIAMOND_BOOTS)
-            .add(Material.DIAMOND_CHESTPLATE)
-            .add(Material.DIAMOND_HELMET)
-            .add(Material.DIAMOND_LEGGINGS)
-            .add(Material.CHAINMAIL_BOOTS)
-            .add(Material.CHAINMAIL_CHESTPLATE)
-            .add(Material.CHAINMAIL_HELMET)
-            .add(Material.CHAINMAIL_LEGGINGS)
-            .build();
+    public static final Set<Material> ARMOR_TYPES = getArmorMaterials();
+
+    private static Set<Material> getArmorMaterials() {
+        final Set<String> armorSuffixes = ImmutableSet.of("BOOTS", "LEGGINGS", "CHESTPLATE", "HELMET");
+        final ImmutableSet.Builder<Material> builder = ImmutableSet.builder();
+        for (Material material : Material.values()) {
+            final int index = material.name().lastIndexOf('_') + 1;
+            final String suffix = material.name().substring(index);
+            if (armorSuffixes.contains(suffix)) {
+                builder.add(material);
+            }
+        }
+        return builder.build();
+    }
 }

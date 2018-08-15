@@ -123,7 +123,9 @@ public class EnchantmentAPI extends JavaPlugin implements EnchantmentRegistry {
 
     private void registerEnchantments() {
         for (final VanillaData vanillaData : VanillaData.values()) {
-            register(vanillaData.getEnchantment());
+            if (vanillaData.doesExist()) {
+                register(vanillaData.getEnchantment());
+            }
         }
 
         for (final Plugin plugin : Bukkit.getPluginManager().getPlugins()) {

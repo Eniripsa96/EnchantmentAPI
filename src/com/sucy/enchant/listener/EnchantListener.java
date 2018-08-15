@@ -134,7 +134,7 @@ public class EnchantListener extends BaseListener {
                 if (tiers[i] == event.getExpLevelCost()) cost = tiers[i + 1];
             }
             event.getEnchanter().setLevel(event.getEnchanter().getLevel() - cost);
-            event.getInventory().removeItem(new ItemStack(Material.INK_SACK, cost, (short) 4));
+            event.getInventory().removeItem(new ItemStack(ItemSet.INK_SACK.getItems()[0], cost, (short) 4));
         }
     }
 

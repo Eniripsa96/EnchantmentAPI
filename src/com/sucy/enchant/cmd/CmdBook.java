@@ -5,6 +5,7 @@ import com.rit.sucy.commands.IFunction;
 import com.rit.sucy.items.ItemManager;
 import com.sucy.enchant.EnchantmentAPI;
 import com.sucy.enchant.api.CustomEnchantment;
+import com.sucy.enchant.api.ItemSet;
 import com.sucy.enchant.vanilla.VanillaEnchantment;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
@@ -37,7 +38,7 @@ public class CmdBook implements IFunction {
             return;
         }
 
-        final ItemStack book = new ItemStack(Material.BOOK_AND_QUILL);
+        final ItemStack book = new ItemStack(ItemSet.BOOK_AND_QUILL.getItems()[0]);
         final BookMeta meta = (BookMeta)book.getItemMeta();
         meta.addPage("EnchantmentAPI\nBy Eniripsa96\n\n Enchantment details");
         meta.setAuthor("Eniripsa96");

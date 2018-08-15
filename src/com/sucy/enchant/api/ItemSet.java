@@ -3,8 +3,6 @@ package com.sucy.enchant.api;
 import org.bukkit.Material;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * EnchantmentAPI © 2017
@@ -12,95 +10,57 @@ import java.util.stream.Collectors;
  */
 public enum ItemSet {
 
-    AXES(Material.WOOD_AXE,
-            Material.STONE_AXE,
-            Material.IRON_AXE,
-            Material.GOLD_AXE,
-            Material.DIAMOND_AXE),
+    BOOK_AND_QUILL("BOOK_AND_QUILL", "WRITTEN_BOOK"),
+    INK_SACK("INK_SAC", "INK_SACK"),
 
-    BOOTS(Material.LEATHER_BOOTS,
-            Material.CHAINMAIL_BOOTS,
-            Material.IRON_BOOTS,
-            Material.GOLD_BOOTS,
-            Material.DIAMOND_BOOTS),
-
+    AXES("_AXE"),
+    BOOTS("BOOTS"),
     BOWS(Material.BOW),
-
-    CHESTPLATES(Material.LEATHER_CHESTPLATE,
-            Material.CHAINMAIL_CHESTPLATE,
-            Material.IRON_CHESTPLATE,
-            Material.GOLD_CHESTPLATE,
-            Material.DIAMOND_CHESTPLATE),
-
+    CHESTPLATES("CHESTPLATE"),
     FISHING(Material.FISHING_ROD),
-
     GLIDERS(Material.ELYTRA),
-
-    HELMETS(Material.LEATHER_HELMET,
-            Material.CHAINMAIL_HELMET,
-            Material.IRON_HELMET,
-            Material.GOLD_HELMET,
-            Material.DIAMOND_HELMET),
-
-    HOES(Material.WOOD_HOE,
-            Material.STONE_HOE,
-            Material.IRON_HOE,
-            Material.GOLD_HOE,
-            Material.DIAMOND_HOE),
-
-    LEGGINGS(Material.LEATHER_LEGGINGS,
-            Material.CHAINMAIL_LEGGINGS,
-            Material.IRON_LEGGINGS,
-            Material.GOLD_LEGGINGS,
-            Material.DIAMOND_LEGGINGS),
-
-    MISCELLANEOUS(Material.SKULL_ITEM,
-            Material.PUMPKIN),
-
-    PICKAXES(Material.WOOD_PICKAXE,
-            Material.STONE_PICKAXE,
-            Material.IRON_PICKAXE,
-            Material.GOLD_PICKAXE,
-            Material.DIAMOND_PICKAXE),
-
+    HELMETS("HELMET"),
+    HOES("_HOE"),
+    LEGGINGS("LEGGINGS"),
+    MISCELLANEOUS("SKELETON_SKULL", "SKULL_ITEM", "PUMPKIN"),
+    PICKAXES("PICKAXE"),
+    SHEARS(Material.SHEARS),
     SHIELDS(Material.SHIELD),
-
-    SHOVELS(Material.WOOD_SPADE,
-            Material.STONE_SPADE,
-            Material.IRON_SPADE,
-            Material.GOLD_SPADE,
-            Material.DIAMOND_SPADE),
-
-    SWORDS(Material.WOOD_SWORD,
-            Material.STONE_SWORD,
-            Material.IRON_SWORD,
-            Material.GOLD_SWORD,
-            Material.DIAMOND_SWORD),
-
-    UTILITY(Material.SHEARS,
-            Material.FLINT_AND_STEEL,
-            Material.CARROT_STICK),
+    SHOVELS("SHOVEL", "SPADE"),
+    SWORDS("SWORD"),
+    TRIDENT("TRIDENT"),
+    UTILITY("SHEARS", "FLINT_AND_STEEL", "CARROT_STICK", "CARROT_ON_A_STICK"),
 
     ARMOR(CHESTPLATES, HELMETS, BOOTS, LEGGINGS),
-
     WEAPONS(SWORDS, AXES),
-
     TOOLS(AXES, SHOVELS, PICKAXES),
+    DURABILITY(SWORDS, TOOLS, BOWS, FISHING, ARMOR),
+    DURABILITY_SECONDARY(UTILITY, HOES, GLIDERS, SHIELDS),
+    DURABILITY_ALL(DURABILITY, DURABILITY_SECONDARY),
 
-    DURABILITY(SWORDS, TOOLS, BOWS, FISHING, ARMOR, UTILITY, HOES, GLIDERS, SHIELDS),
+    VANILLA_ENCHANTABLES(SWORDS, TRIDENT, TOOLS, BOWS, FISHING, ARMOR, UTILITY, GLIDERS, MISCELLANEOUS),
 
-    VANILLA_ENCHANTABLES(SWORDS, TOOLS, BOWS, FISHING, ARMOR, UTILITY, GLIDERS, SHIELDS, MISCELLANEOUS),
-
-    ALL(DURABILITY, MISCELLANEOUS);
+    NONE,
+    ALL(DURABILITY, DURABILITY_SECONDARY, MISCELLANEOUS);
 
     private final Material[] items;
 
+    ItemSet() {
+        items = new Material[0];
+    }
+
+    ItemSet(final String... suffixes) {
+        items = Arrays.stream(Material.values())
+                .filter(material -> !material.name().startsWith("LEGACY")
+                        && Arrays.stream(suffixes).anyMatch(material.name()::endsWith))
+                .toArray(Material[]::new);
+    }
+
     ItemSet(final ItemSet... sets) {
-        final List<Material> list = Arrays.stream(sets)
+        items = Arrays.stream(sets)
                 .map(ItemSet::getItems)
                 .flatMap(Arrays::stream)
-                .collect(Collectors.toList());
-        items = list.toArray(new Material[list.size()]);
+                .toArray(Material[]::new);
     }
 
     ItemSet(final Material... items) {
